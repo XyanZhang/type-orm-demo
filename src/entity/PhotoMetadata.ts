@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  Relation,
 } from "typeorm"
 import { Photo } from "./Photo"
 
@@ -28,7 +29,8 @@ export class PhotoMetadata {
   comment: string
 
   // 关联 一对一
-  @OneToOne(() => Photo)
+  // @OneToOne(() => Photo) // 关联Photo，这种关系只会在 PhotoMetadata 显示 Photo
+  @OneToOne(() => Photo, (photo) => photo.metadata) // 双向关联
   @JoinColumn() // 这表明关系的这一边将拥有该关系
-  photo: Photo
+  photo: Relation<Photo>
 }

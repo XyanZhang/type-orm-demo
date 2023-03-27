@@ -1,7 +1,8 @@
-import { AppDataSource } from "./data-source"
-import { Photo } from "./entity/Photo"
-import { User } from "./entity/User"
-import { UserExtend } from './entity/UserExtend'
+import { AppDataSource } from './data-source';
+import { Photo } from './entity/Photo';
+import { PhotoMetadata } from './entity/PhotoMetadata';
+import { User } from './entity/User';
+import { UserExtend } from './entity/UserExtend';
 
 // AppDataSource.initialize().then(async () => {
 
@@ -23,88 +24,176 @@ import { UserExtend } from './entity/UserExtend'
 
 // TODO: 有错误
 let getUsers = async () => {
-    await AppDataSource.initialize();
-    const user = new UserExtend()
-    user.firstName = "Timber"
-    user.lastName = "Saw"
-    user.age = 25
-    await user.saveUser()
+  await AppDataSource.initialize();
+  const user = new UserExtend();
+  user.firstName = 'Timber';
+  user.lastName = 'Saw';
+  user.age = 25;
+  await user.saveUser();
 
-    const allUsers = await UserExtend.find()
-    console.log(allUsers)
-}
+  const allUsers = await UserExtend.find();
+  console.log(allUsers);
+};
 // getUsers()
 
 // 增
 let addPhoto = async () => {
-    const photo = new Photo()
-    photo.name = "Me and Bears"
-    photo.description = "I am near polar bears"
-    photo.filename = "photo-with-bears.jpg"
-    photo.views = 1
-    photo.isPublished = true
+  const photo = new Photo();
+  photo.name = 'Me and Bears';
+  photo.description = 'I am near polar bears';
+  photo.filename = 'photo-with-bears.jpg';
+  photo.views = 1;
+  photo.isPublished = true;
 
-    // 保存进数据库
-    await AppDataSource.manager.save(photo)
-    console.log("Photo has been saved. Photo id is", photo.id)
+  // 保存进数据库
+  await AppDataSource.manager.save(photo);
+  console.log('Photo has been saved. Photo id is', photo.id);
 
-    // 操作数据库数据
-    const savedPhotos = await AppDataSource.manager.find(Photo)
-    console.log("All photos from the db: ", savedPhotos)
-}
+  // 操作数据库数据
+  const savedPhotos = await AppDataSource.manager.find(Photo);
+  console.log('All photos from the db: ', savedPhotos);
+};
 // 查询
 let useRepo = async () => {
-    const photoRepository = AppDataSource.getRepository(Photo)
-    const allPhotos = await photoRepository.find()
-    console.log("All photos from the db: ", allPhotos)
+  const photoRepository = AppDataSource.getRepository(Photo);
+  const allPhotos = await photoRepository.find();
+  console.log('All photos from the db: ', allPhotos);
 
-    const firstPhoto = await photoRepository.findOneBy({
-        id: 1,
-    })
-    console.log("First photo from the db: ", firstPhoto)
+  const firstPhoto = await photoRepository.findOneBy({
+    id: 1,
+  });
+  console.log('First photo from the db: ', firstPhoto);
 
-    const meAndBearsPhoto = await photoRepository.findOneBy({
-        name: "Me and Bears",
-    })
-    console.log("Me and Bears photo from the db: ", meAndBearsPhoto)
+  const meAndBearsPhoto = await photoRepository.findOneBy({
+    name: 'Me and Bears',
+  });
+  console.log('Me and Bears photo from the db: ', meAndBearsPhoto);
 
-    const allViewedPhotos = await photoRepository.findBy({ views: 1 })
-    console.log("All viewed photos: ", allViewedPhotos)
+  const allViewedPhotos = await photoRepository.findBy({ views: 1 });
+  console.log('All viewed photos: ', allViewedPhotos);
 
-    const allPublishedPhotos = await photoRepository.findBy({ isPublished: true })
-    console.log("All published photos: ", allPublishedPhotos)
+  const allPublishedPhotos = await photoRepository.findBy({
+    isPublished: true,
+  });
+  console.log('All published photos: ', allPublishedPhotos);
 
-    const [photos, photosCount] = await photoRepository.findAndCount()
-    console.log("All photos: ", photos)
-    console.log("Photos count: ", photosCount)
-}
+  const [photos, photosCount] = await photoRepository.findAndCount();
+  console.log('All photos: ', photos);
+  console.log('Photos count: ', photosCount);
+};
 
 // 改
 let updateData = async () => {
-    const photoRepository = AppDataSource.getRepository(Photo)
-    const photoToUpdate = await photoRepository.findOneBy({
-        id: 1,
-    })
-    photoToUpdate.name = "Me, my friends and polar bears"
-    await photoRepository.save(photoToUpdate)
-}
+  const photoRepository = AppDataSource.getRepository(Photo);
+  const photoToUpdate = await photoRepository.findOneBy({
+    id: 1,
+  });
+  photoToUpdate.name = 'Me, my friends and polar bears';
+  await photoRepository.save(photoToUpdate);
+};
 // 删
 let removeData = async () => {
-    const photoRepository = AppDataSource.getRepository(Photo)
-    const photoToRemove = await photoRepository.findOneBy({
-        id: 1,
-    })
-    await photoRepository.remove(photoToRemove)
-}
+  const photoRepository = AppDataSource.getRepository(Photo);
+  const photoToRemove = await photoRepository.findOneBy({
+    id: 1,
+  });
+  await photoRepository.remove(photoToRemove);
+};
+
+let oneToOne = async () => {
+  // create a photo
+  const photo = new Photo();
+  photo.name = 'Me and Bears';
+  photo.description = 'I am near polar bears';
+  photo.filename = 'photo-with-bears.jpg';
+  photo.views = 1;
+  photo.isPublished = true;
+
+  // create a photo metadata
+  const metadata = new PhotoMetadata();
+  metadata.height = 640;
+  metadata.width = 480;
+  metadata.compressed = true;
+  metadata.comment = 'cybershoot';
+  metadata.orientation = 'portrait';
+  metadata.photo = photo; // 关联一对一
+
+  // get entity repositories
+  const photoRepository = AppDataSource.getRepository(Photo);
+  const metadataRepository = AppDataSource.getRepository(PhotoMetadata);
+
+  // first we should save a photo
+  await photoRepository.save(photo);
+
+  // photo is saved. Now we need to save a photo metadata
+  await metadataRepository.save(metadata);
+
+  // done
+  console.log(
+    'Metadata is saved, and the relation between metadata and photo is created in the database too',
+  );
+};
+
+let getOneToOne = async () => {
+  const photoRepository = AppDataSource.getRepository(Photo);
+  const photos = await photoRepository.find({
+    relations: {
+      metadata: true,
+    },
+  });
+  console.log(photos);
+};
+let complexQuery = async () => {
+  const photos = await AppDataSource.getRepository(Photo)
+    .createQueryBuilder('photo')
+    .innerJoinAndSelect('photo.metadata', 'metadata')
+    .getMany();
+
+  console.log(photos);
+};
+
+let oneToOneCascade = async () => {
+  // create photo object
+  const photo = new Photo();
+  photo.name = 'Me and Bears';
+  photo.description = 'I am near polar bears';
+  photo.filename = 'photo-with-bears.jpg';
+  photo.isPublished = true;
+  photo.views = 10;
+
+  // create photo metadata object
+  const metadata = new PhotoMetadata();
+  metadata.height = 640;
+  metadata.width = 480;
+  metadata.compressed = true;
+  metadata.comment = 'cybershoot';
+  metadata.orientation = 'portrait';
+
+  photo.metadata = metadata; // this way we connect them
+
+  // get repository
+  const photoRepository = AppDataSource.getRepository(Photo);
+
+  // saving a photo also save the metadata
+  await photoRepository.save(photo);
+
+  console.log('Photo is saved, photo metadata is saved too.');
+};
 
 let operateDb = async () => {
-    await AppDataSource.initialize(); // 初始化链接
+  await AppDataSource.initialize(); // 初始化链接
 
-    // ... 数据库操作
-    // addPhoto()
-    // await useRepo()
-    // await updateData()
-    // 断开数据库连接
-    AppDataSource.destroy()
-}
-operateDb() 
+  // ... 数据库操作
+  // addPhoto()
+  // await useRepo()
+  // await updateData()
+  // await oneToOne();
+  // await getOneToOne();
+  // await complexQuery();
+
+  await oneToOneCascade();
+
+  // 断开数据库连接
+  AppDataSource.destroy();
+};
+operateDb();
