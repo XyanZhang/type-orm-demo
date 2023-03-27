@@ -1,6 +1,7 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { Photo } from "./entity/Photo"
+import { PhotoMetadata } from "./entity/PhotoMetadata"
 import { User } from "./entity/User"
 import { UserExtend } from "./entity/UserExtend"
 
@@ -15,5 +16,5 @@ export const AppDataSource = new DataSource({
     logging: true,
     subscribers: [],
     migrations: [],
-    entities: [User, Photo],
+    entities: [User, Photo, PhotoMetadata], // 根据实体创建数据表
 })

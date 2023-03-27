@@ -103,7 +103,7 @@ let operateDb = async () => {
     // ... 数据库操作
     // addPhoto()
     // await useRepo()
-    await updateData()
+    // await updateData()
     // 断开数据库连接
     AppDataSource.destroy()
 }
