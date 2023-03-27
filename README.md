@@ -1,73 +1,30 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# typeorm doc
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## getRepository
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+getRepository是TypeORM提供的一个方法，用于获取指定实体类的数据库操作对象。它的用法如下：
 
-## Description
+```typescript
+import { getRepository } from "typeorm";
+import { User } from "./entities/User";
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ pnpm install
+const userRepository = getRepository(User);
 ```
 
-## Running the app
+在这个例子中，我们使用getRepository方法获取了User实体类的数据库操作对象userRepository。通过userRepository，我们可以进行一些常见的数据库操作，如保存、查询、删除等。
 
-```bash
-# development
-$ pnpm run start
+getRepository方法接受一个参数，即实体类。该参数可以是实体类的类名，也可以是实体类的实例。在上面的例子中，我们传递了User实体类作为参数，因此userRepository对象可以用来操作User实体类对应的数据库表。
 
-# watch mode
-$ pnpm run start:dev
+getRepository方法返回的对象包含了一些常用的数据库操作方法，如：
 
-# production mode
-$ pnpm run start:prod
+```ts
+save(entity: Entity): Promise<Entity>：保存实体类对象到数据库。
+remove(entity: Entity): Promise<Entity>：从数据库中删除实体类对象。
+findOne(id: string|number|Date|ObjectID, options?: FindOneOptions<Entity>): Promise<Entity|undefined>：根据ID或其他条件查询单个实体类对象。
+find(options?: FindManyOptions<Entity>): Promise<Entity[]>：查询符合条件的多个实体类对象。
+delete(criteria: string|number|Date|ObjectID|any[]): Promise<DeleteResult>：根据ID或其他条件删除实体类对象。
 ```
 
-## Test
+除了以上列出的方法，还有很多其他有用的方法可以在getRepository返回的对象上调用。你可以查阅TypeORM的文档来了解更多信息。
 
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+总之，getRepository方法是TypeORM中非常实用的一个方法，它可以让我们方便地获取指定实体类的数据库操作对象，并进行常见的数据库操作。

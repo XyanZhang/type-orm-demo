@@ -35,7 +35,7 @@ let getUsers = async () => {
 }
 // getUsers()
 
-
+// 增
 let addPhoto = async () => {
     const photo = new Photo()
     photo.name = "Me and Bears"
@@ -52,6 +52,7 @@ let addPhoto = async () => {
     const savedPhotos = await AppDataSource.manager.find(Photo)
     console.log("All photos from the db: ", savedPhotos)
 }
+// 查询
 let useRepo = async () => {
     const photoRepository = AppDataSource.getRepository(Photo)
     const allPhotos = await photoRepository.find()
@@ -78,14 +79,31 @@ let useRepo = async () => {
     console.log("Photos count: ", photosCount)
 }
 
+// 改
+let updateData = async () => {
+    const photoRepository = AppDataSource.getRepository(Photo)
+    const photoToUpdate = await photoRepository.findOneBy({
+        id: 1,
+    })
+    photoToUpdate.name = "Me, my friends and polar bears"
+    await photoRepository.save(photoToUpdate)
+}
+// 删
+let removeData = async () => {
+    const photoRepository = AppDataSource.getRepository(Photo)
+    const photoToRemove = await photoRepository.findOneBy({
+        id: 1,
+    })
+    await photoRepository.remove(photoToRemove)
+}
 
 let operateDb = async () => {
     await AppDataSource.initialize(); // 初始化链接
 
     // ... 数据库操作
     // addPhoto()
-    await useRepo()
-
+    // await useRepo()
+    await updateData()
     // 断开数据库连接
     AppDataSource.destroy()
 }
