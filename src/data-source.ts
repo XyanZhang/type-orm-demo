@@ -5,6 +5,7 @@ import { PhotoMetadata } from "./entity/PhotoMetadata"
 import { User } from "./entity/User"
 import { UserExtend } from "./entity/UserExtend"
 import { Author } from './entity/Author';
+import { Album } from "./entity/Album"
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -17,5 +18,5 @@ export const AppDataSource = new DataSource({
     logging: true,
     subscribers: [],
     migrations: [],
-    entities: [User, Photo, PhotoMetadata, Author], // 根据实体创建数据表
+    entities: [User, Photo, PhotoMetadata, Author, Album], // 根据实体创建数据表
 })

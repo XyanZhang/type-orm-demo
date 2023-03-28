@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, Relation, ManyToOne } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, Relation, ManyToOne, ManyToMany } from "typeorm"
+import { Album } from "./Album"
 import { Author } from "./Author"
 import { PhotoMetadata } from "./PhotoMetadata"
 
@@ -36,4 +37,8 @@ export class Photo {
     // 多个照片可以属于一个作者
     @ManyToOne(() => Author, (author) => author.photos)
     author: Author
+
+    // 一个照片可以属于多个相册
+    @ManyToMany(() => Album, (album) => album.photos)
+    albums: Album[]
 }

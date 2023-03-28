@@ -1,4 +1,5 @@
 import { AppDataSource } from './data-source';
+import { Album } from './entity/Album';
 import { Photo } from './entity/Photo';
 import { PhotoMetadata } from './entity/PhotoMetadata';
 import { User } from './entity/User';
@@ -180,6 +181,41 @@ let oneToOneCascade = async () => {
   console.log('Photo is saved, photo metadata is saved too.');
 };
 
+let manyToMany = async () => {
+  // create a few albums
+  const album1 = new Album();
+  album1.name = 'Bears';
+  await AppDataSource.manager.save(album1);
+
+  const album2 = new Album();
+  album2.name = 'Me';
+  await AppDataSource.manager.save(album2);
+
+  // create a few photos
+  const photo = new Photo();
+  photo.name = 'Me and Bears';
+  photo.description = 'I am near polar bears';
+  photo.filename = 'photo-with-bears.jpg';
+  photo.views = 1;
+  photo.isPublished = true;
+  photo.albums = [album1, album2];
+  // 保存
+  await AppDataSource.manager.save(photo);
+};
+
+let queryAlbums = async () => {
+  // 查询
+  const loadedPhoto = await AppDataSource.getRepository(Photo).findOne({
+    where: {
+      id: 8,
+    },
+    relations: {
+      albums: true,
+    },
+  });
+  console.log(loadedPhoto);
+};
+
 let operateDb = async () => {
   await AppDataSource.initialize(); // 初始化链接
 
@@ -191,7 +227,11 @@ let operateDb = async () => {
   // await getOneToOne();
   // await complexQuery();
 
-  await oneToOneCascade();
+  // await oneToOneCascade();
+
+  // await manyToMany();
+
+  await queryAlbums();
 
   // 断开数据库连接
   AppDataSource.destroy();
