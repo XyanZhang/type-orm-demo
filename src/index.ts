@@ -216,6 +216,23 @@ let queryAlbums = async () => {
   console.log(loadedPhoto);
 };
 
+
+let useQueryBuilder = async () => {
+  const photos = await AppDataSource.getRepository(Photo)
+    .createQueryBuilder("photo") // first argument is an alias. Alias is what you are selecting - photos. You must specify it.
+    .innerJoinAndSelect("photo.metadata", "metadata")
+    .leftJoinAndSelect("photo.albums", "album")
+    .where("photo.isPublished = true")
+    .andWhere("(photo.name = :photoName OR photo.name = :bearName)")
+    .orderBy("photo.id", "DESC")
+    .skip(5)
+    .take(10)
+    .setParameters({ photoName: "My", bearName: "Mishka" })
+    .getMany()
+
+  console.log(photos)
+}
+
 let operateDb = async () => {
   await AppDataSource.initialize(); // 初始化链接
 
@@ -226,13 +243,11 @@ let operateDb = async () => {
   // await oneToOne();
   // await getOneToOne();
   // await complexQuery();
-
   // await oneToOneCascade();
-
   // await manyToMany();
+  // await queryAlbums();
 
-  await queryAlbums();
-
+  await useQueryBuilder();
   // 断开数据库连接
   AppDataSource.destroy();
 };
