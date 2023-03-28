@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, Relation } from "typeorm"
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, Relation, ManyToOne } from "typeorm"
+import { Author } from "./Author"
 import { PhotoMetadata } from "./PhotoMetadata"
 
 @Entity() // 创建数据库模型
@@ -31,4 +32,8 @@ export class Photo {
         cascade: true, // 简单地保存一个照片对象，并且元数据对象会因为级联选项而自动保存
     })
     metadata: Relation<PhotoMetadata>
+
+    // 多个照片可以属于一个作者
+    @ManyToOne(() => Author, (author) => author.photos)
+    author: Author
 }
