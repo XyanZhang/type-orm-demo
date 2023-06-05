@@ -3,7 +3,6 @@ import { DataSource } from "typeorm"
 import { Photo } from "./entity/Photo"
 import { PhotoMetadata } from "./entity/PhotoMetadata"
 import { User } from "./entity/User"
-import { UserExtend } from "./entity/UserExtend"
 import { Author } from './entity/Author';
 import { Album } from "./entity/Album"
 

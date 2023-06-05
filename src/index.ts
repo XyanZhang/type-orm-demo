@@ -219,7 +219,7 @@ let queryAlbums = async () => {
 
 let useQueryBuilder = async () => {
   const photos = await AppDataSource.getRepository(Photo)
-    .createQueryBuilder("photo") // first argument is an alias. Alias is what you are selecting - photos. You must specify it.
+    .createQueryBuilder(Photo, "photo") // createQueryBuilder 方法有两个参数，第一个参数是实体类的名称或实体类的构造函数，第二个参数是可选的别名
     .innerJoinAndSelect("photo.metadata", "metadata")
     .leftJoinAndSelect("photo.albums", "album")
     .where("photo.isPublished = true")
